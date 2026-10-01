@@ -74,6 +74,8 @@ function serializeCSV(rows, { delimiter = ',', protectFormulas = false } = {}) {
   return rows.map(row => row.map(value => {
     let text = value == null ? '' : String(value);
     if (protectFormulas && /^[=+@\-\t\r\n]/.test(text)) text = `'${text}`;
+    // An unquoted empty singleton becomes only a trailing record separator.
+    if (row.length === 1 && text === '') return '""';
     return text.includes(delimiter) || /["\r\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
   }).join(delimiter)).join('\r\n');
 }

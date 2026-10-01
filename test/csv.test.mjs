@@ -38,6 +38,16 @@ test('CSV round trips arbitrary field delimiters, Unicode, line breaks and quote
   const rows = [['a','b','c'],['é 🦊','x,y;z\t','"quote"\r\nnext'],['  ','','last']];
   for (const delimiter of [',',';','\t']) assert.deepEqual(parseCSV(serializeCSV(rows,{delimiter}),{delimiter}), rows);
 });
+test('CSV export preserves empty single-column records, including the last record', () => {
+  for (const rows of [[['']], [['name'], ['']], [['name'], [''], ['']]]) {
+    for (const delimiter of [',', ';', '\t']) {
+      for (const protectFormulas of [false, true]) {
+        assert.deepEqual(parseCSV(serializeCSV(rows, { delimiter, protectFormulas }), { delimiter }), rows);
+      }
+    }
+  }
+  assert.equal(serializeCSV([['name'], ['']]), 'name\r\n""');
+});
 test('cleaning compares full rows after trimming, preserves first and never mutates input', () => {
   const rows = [['name','city'],[' Ada ',' London '],['Ada','London'],['',''],['Ada','Paris']];
   const before = structuredClone(rows);
