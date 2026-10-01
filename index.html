@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Inspect, clean and convert CSV and JSON locally in your browser. Free, offline, open source.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>ClearTab · Local CSV & JSON tools</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%23236347%22%2F%3E%3Cpath%20d%3D%22M16%2016h32v32H16zM16%2027h32M16%2037h32M27%2016v32M37%2016v32%22%20fill%3D%22none%22%20stroke%3D%22%23f4f9e7%22%20stroke-width%3D%223%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E%0A" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="csv-browser.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="site-header wrap">
+    <a class="brand" href="index.html" aria-label="ClearTab home"><span class="brand-mark" aria-hidden="true">▦</span> ClearTab</a>
+    <nav class="header-nav" aria-label="Main"><a href="#support">Support the project</a><span class="local-badge"><span aria-hidden="true"></span> Your data stays here</span></nav>
+  </header>
+  <main class="wrap">
+    <section class="intro">
+      <p class="eyebrow">SMALL TOOLS / CLEARER DATA</p>
+      <h1>A clean table.<br>Ready for its next step.</h1>
+      <p class="lede">Check a CSV, find repeated rows, or move between CSV and JSON.<br class="wide-only"> Everything runs in this browser. No accounts, uploads or tracking.</p>
+    </section>
+
+    <section class="workspace" aria-labelledby="input-heading">
+      <div class="section-heading"><h2 id="input-heading"><span class="step">01</span> Bring your data</h2><button class="text-button" id="sample" type="button">Try a sample</button></div>
+      <div class="input-grid">
+        <label class="drop-zone" id="drop-zone" for="file">
+          <span class="file-symbol" aria-hidden="true">↥</span>
+          <strong>Choose a file</strong>
+          <span>or drop it here</span>
+          <small>UTF-8 CSV, TSV or JSON · up to 5 MB</small>
+          <input id="file" type="file" accept=".csv,.tsv,.json,.txt,text/csv,application/json,text/plain">
+        </label>
+        <div class="paste-area">
+          <div class="input-options">
+            <label>Input format<select id="format"><option value="csv">CSV / TSV</option><option value="json">JSON array</option></select></label>
+            <label id="delimiter-label">Delimiter<select id="delimiter"><option value=",">Comma (,)</option><option value=";">Semicolon (;)</option><option value="tab">Tab</option></select></label>
+          </div>
+          <label class="sr-only" for="input">Paste CSV or a JSON array of flat objects</label>
+          <textarea id="input" rows="7" spellcheck="false" placeholder="name,city&#10;Ada,London&#10;Lin,Taipei" aria-describedby="input-help"></textarea>
+          <p id="input-help" class="hint">Or paste here. CSV uses its first row as column names. Blank lines become empty rows; other fields keep their text.</p>
+        </div>
+      </div>
+      <div class="input-footer"><span id="filename" class="hint">No file selected</span><div class="button-row"><button id="clear" class="secondary" type="button">Clear</button><button id="inspect" class="primary" type="button">Inspect data</button></div></div>
+      <div id="error" class="error" role="alert" hidden></div>
+      <p id="status" class="sr-only" role="status" aria-live="polite"></p>
+    </section>
+
+    <section id="results" class="workspace results" aria-labelledby="preview-heading" hidden>
+      <div class="section-heading"><h2 id="preview-heading"><span class="step">02</span> Review & clean</h2><span class="verified">✓ Structure checked</span></div>
+      <div class="stats" aria-live="polite"><div><strong id="row-count">0</strong><span>data rows</span></div><div><strong id="col-count">0</strong><span>columns</span></div><div><strong id="dup-count">0</strong><span>repeated rows</span></div></div>
+      <div class="clean-options">
+        <label><input type="checkbox" id="trim"> Trim outer whitespace</label>
+        <label><input type="checkbox" id="remove-empty"> Remove empty rows</label>
+        <label><input type="checkbox" id="dedupe"> Remove duplicates <small>(keep first)</small></label>
+      </div>
+      <p id="changes" class="hint"></p>
+      <div class="table-wrap" tabindex="0" aria-label="Data preview; scroll horizontally for more columns"><table id="preview"></table></div>
+      <p id="preview-note" class="hint"></p>
+      <p id="duplicate-note" class="duplicate-note"></p>
+      <div class="export-area">
+        <div><h3>Take your data with you</h3><p class="hint">All working cells and JSON downloads use text values. JSON numbers and booleans become text; null or missing values become empty cells. CSV downloads use commas.</p><label class="formula-option"><input type="checkbox" id="protect"> Prefix spreadsheet formulas with an apostrophe <small>(CSV only; changes those values)</small></label></div>
+        <div class="button-row export-buttons"><button id="download-csv" class="secondary" type="button">Download CSV</button><button id="download-json" class="primary" type="button">Download JSON</button></div>
+      </div>
+      <p id="export-error" class="error" role="alert" hidden></p>
+    </section>
+
+    <section class="details-grid" aria-label="About ClearTab">
+      <div><h3>Local by design</h3><p>Files are read in memory on your device. ClearTab has no server processing, analytics, cookies or external libraries. Close the tab to discard the data.</p><a href="README.md">Read the documentation</a></div>
+      <div><h3>Open about how it’s built</h3><p>A small, AI-assisted open-source project under the MIT license. Processing is deterministic and local, with no online AI model. Review the code, report an issue, or adapt it for your own workflow.</p><a href="https://github.com/maksimryabkin/cleartab" target="_blank" rel="noopener noreferrer">Source code</a> · <a href="LICENSE">MIT license</a></div>
+    </section>
+    <section id="support" class="support" aria-labelledby="support-heading">
+      <div><p class="eyebrow">OPTIONAL SUPPORT</p><h2 id="support-heading">Keep small, useful tools open.</h2><p>Optional, unconditional gifts support the maintainer’s time and development tools. The app stays free for everyone. No perks, ownership or returns are offered.</p><p>First community support goal: <strong>100 USDT</strong>.</p></div>
+      <div class="wallet"><label for="address">USDT · TRON (TRC20) only</label><div class="address-row"><input id="address" readonly value="TNDS9ddpMTwx4YhJJdsYxKC8PRTLyczBHK" aria-label="USDT TRC20 donation address"><button id="copy-address" type="button" class="secondary">Copy</button></div><small>Use a standard direct USDT transfer on TRON (TRC20). Minimum credited: 0.005 USDT; network fees are separate. No batch or smart-contract payouts.</small><small id="copy-status" role="status"></small></div>
+    </section>
+  </main>
+  <footer class="wrap"><span>ClearTab</span><span>Useful by itself. Yours to inspect.</span><span>MIT · AI-assisted</span></footer>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "name": "cleartab",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Offline CSV and JSON inspection, cleaning and conversion",
+  "license": "MIT",
+  "scripts": { "build": "node build.mjs", "test": "node --test" },
+  "engines": { "node": ">=20" }
+}
